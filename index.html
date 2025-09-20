@@ -3,131 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SneakyTool – NFL Dashboard (Demo)</title>
-  <style>
-    body {
-      margin: 0; 
-      padding: 20px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #006400;
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    h1 {
-      text-align: center;
-      color: #e94560;
-      margin-bottom: 5px;
-    }
-
-    h2 {
-      text-align: center;
-      font-weight: normal;
-      color: #ffd700;
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
-
-    .coming-soon {
-      text-align: center;
-      font-size: 1rem;
-      margin-bottom: 20px;
-      color: #fff;
-      opacity: 0.85;
-    }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      gap: 10px;
-    }
-    select, input {
-      padding: 6px 12px;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
-    }
-
-    /* Player Cards */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-      width: 100%;
-      max-width: 900px;
-      margin-bottom: 40px;
-    }
-
-    .card {
-      background-color: #1a472a;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      background-color: #2a7a33;
-    }
-
-    .player-name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .player-team {
-      font-size: 0.9rem;
-      color: #ffd700;
-      margin-bottom: 10px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .stat {
-      background-color: #006400;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      flex: 1 1 40%;
-      text-align: center;
-    }
-
-    .highlight {
-      background-color: #e94560;
-      font-weight: bold;
-    }
-
-    footer {
-      width: 100%;
-      text-align: center;
-      padding: 15px 0;
-      background-color: #004d00;
-      color: #fff;
-      font-size: 0.85rem;
-      position: relative;
-      bottom: 0;
-    }
-  </style>
+  <title>SneakyTool – NFL Dashboard Demo</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>SneakyTool – NFL Dashboard</h1>
-  <h2>Demo – Coming Soon!</h2>
-  <div class="coming-soon">
-    This is a demo version of SneakyTool. Full features and live NFL data will be available soon.
-  </div>
+  <h2 style="text-align:center;color:#ffd700;">Demo / Coming Soon</h2>
 
   <!-- Filters -->
   <div class="filters">
@@ -144,87 +25,13 @@
     <input type="text" id="searchPlayer" placeholder="Search Player">
   </div>
 
-  <div class="cards" id="cardsContainer">
-    <!-- Player cards inserted here -->
-  </div>
+  <!-- Cards container -->
+  <div class="cards" id="cardsContainer"></div>
 
-  <script>
-    let playersData = [];
+  <!-- Compare section -->
+  <h2 style="text-align:center;color:#ffd700;">Compare Selected Players</h2>
+  <div class="compare-container" id="compareContainer"></div>
 
-    // Fetch sample JSON
-    fetch('data.json')
-      .then(res => res.json())
-      .then(data => {
-        playersData = data.players;
-        populateFilters(playersData);
-        renderCards(playersData);
-      })
-      .catch(err => console.error('Error loading JSON:', err));
-
-    const cardsContainer = document.getElementById('cardsContainer');
-    const teamFilter = document.getElementById('teamFilter');
-    const positionFilter = document.getElementById('positionFilter');
-    const searchPlayer = document.getElementById('searchPlayer');
-
-    function renderCards(data) {
-      cardsContainer.innerHTML = '';
-      data.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <div class="player-name">${p.name || '-'}</div>
-          <div class="player-team">${p.team || '-'} | ${p.position || '-'}</div>
-          <div class="stats">
-            <div class="stat">Passing: ${p.passingYards || 0}</div>
-            <div class="stat">Rushing: ${p.rushingYards || 0}</div>
-            <div class="stat">Receiving: ${p.receivingYards || 0}</div>
-            <div class="stat">TDs: ${p.touchdowns || 0}</div>
-            <div class="stat highlight">FP: ${p.fantasyPoints || 0}</div>
-          </div>
-        `;
-        cardsContainer.appendChild(div);
-      });
-    }
-
-    function populateFilters(data) {
-      const teams = [...new Set(data.map(p => p.team))];
-      const positions = [...new Set(data.map(p => p.position))];
-
-      teams.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        teamFilter.appendChild(opt);
-      });
-
-      positions.forEach(pos => {
-        const opt = document.createElement('option');
-        opt.value = pos;
-        opt.textContent = pos;
-        positionFilter.appendChild(opt);
-      });
-    }
-
-    function applyFilters() {
-      const team = teamFilter.value;
-      const position = positionFilter.value;
-      const search = searchPlayer.value.toLowerCase();
-
-      const filtered = playersData.filter(p => 
-        (!team || p.team === team) &&
-        (!position || p.position === position) &&
-        (!search || p.name.toLowerCase().includes(search))
-      );
-      renderCards(filtered);
-    }
-
-    teamFilter.addEventListener('change', applyFilters);
-    positionFilter.addEventListener('change', applyFilters);
-    searchPlayer.addEventListener('input', applyFilters);
-  </script>
-
-  <footer>
-    &copy; 2025 SneakyTool
-  </footer>
+  <script src="script.js"></script>
 </body>
 </html>
