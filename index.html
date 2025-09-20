@@ -1,295 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SneakyTool – NFL Dashboard (Coming Soon)</title>
-  <style>
-    body {
-      margin: 0; 
-      padding: 20px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://i.imgur.com/5eV2iXf.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SneakyTool – NFL Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #0b3d0b;
+    color: #fff;
+    min-height: 100vh;
+  }
 
-    h1 {
-      text-align: center;
-      color: #e94560;
-      margin-bottom: 10px;
-    }
+  header {
+    text-align: center;
+    padding: 20px 10px;
+    background: linear-gradient(90deg, #006400, #009900);
+  }
 
-    h2 {
-      text-align: center;
-      font-weight: normal;
-      margin-top: 0;
-      margin-bottom: 20px;
-      color: #ffd700;
-    }
+  header h1 {
+    margin: 0;
+    color: #e94560;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
 
-    /* Filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #0a2e0a;
+    border-bottom: 2px solid #2a7a33;
+  }
+
+  .filters select,
+  .filters input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .card {
+    background-color: #1a472a;
+    border-radius: 12px;
+    padding: 15px;
+    width: 300px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    background-color: #2a7a33;
+  }
+
+  .player-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+
+  .player-team {
+    font-size: 0.9rem;
+    color: #ffd700;
+    margin-bottom: 10px;
+  }
+
+  .stat {
+    background-color: #006400;
+    padding: 6px 8px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+
+  .highlight {
+    background-color: #e94560;
+    font-weight: bold;
+  }
+
+  .compare-table-container {
+    overflow-x: auto;
+    padding: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a472a;
+  }
+
+  th, td {
+    padding: 10px;
+    border: 1px solid #2a7a33;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background-color: #2a7a33;
+    cursor: pointer;
+  }
+
+  tr:hover {
+    background-color: #2f8a44;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px 10px;
+    background-color: #0a2e0a;
+    border-top: 2px solid #2a7a33;
+    color: #ccc;
+  }
+
+  @media(max-width: 768px){
     .filters {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      gap: 10px;
-    }
-    select, input {
-      padding: 6px 12px;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* Player Cards */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
+    .cards-container {
+      flex-direction: column;
+      align-items: center;
     }
-
-    .card {
-      background-color: rgba(26,71,42,0.85);
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      background-color: rgba(42,122,51,0.85);
-    }
-
-    .player-name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .player-team {
-      font-size: 0.9rem;
-      color: #ffd700;
-      margin-bottom: 10px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .stat {
-      background-color: rgba(0,100,0,0.8);
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      flex: 1 1 40%;
-      text-align: center;
-    }
-
-    .highlight {
-      background-color: #e94560;
-      font-weight: bold;
-    }
-
-    /* Compare Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      margin-bottom: 40px;
-      background-color: rgba(26,71,42,0.85);
-      color: #fff;
-    }
-    th, td {
-      border: 1px solid #fff;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: rgba(0,0,0,0.6);
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.9rem;
-      color: #ffd700;
-    }
-
-    .coming-soon {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.1rem;
-      color: #fffa;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
+
+<header>
   <h1>SneakyTool – NFL Dashboard</h1>
-  <h2>Coming Soon – Demo Data</h2>
-  <div class="coming-soon">This is a demo version. Full data coming soon!</div>
+</header>
 
-  <!-- Filters -->
-  <div class="filters">
-    <label>Team:
-      <select id="teamFilter">
-        <option value="">All</option>
-      </select>
-    </label>
-    <label>Position:
-      <select id="positionFilter">
-        <option value="">All</option>
-      </select>
-    </label>
-    <input type="text" id="searchPlayer" placeholder="Search Player">
-  </div>
+<div class="filters">
+  <label>Team:
+    <select id="teamFilter"><option value="">All</option></select>
+  </label>
+  <label>Position:
+    <select id="positionFilter"><option value="">All</option></select>
+  </label>
+  <input type="text" id="searchPlayer" placeholder="Search Player">
+</div>
 
-  <div class="cards" id="cardsContainer">
-    <!-- Player cards inserted here -->
-  </div>
+<div class="cards-container" id="cardsContainer"></div>
 
-  <!-- Compare -->
-  <div class="filters">
-    <label>Compare Players (hold Ctrl to select multiple):
-      <select id="compareSelect" multiple size="5"></select>
-    </label>
-  </div>
+<div class="compare-table-container">
+  <h2>Compare Players</h2>
   <table id="compareTable">
     <thead>
       <tr>
         <th>Name</th>
         <th>Team</th>
         <th>Position</th>
-        <th>Passing</th>
-        <th>Rushing</th>
-        <th>Receiving</th>
+        <th>Passing Yards</th>
+        <th>Rushing Yards</th>
+        <th>Receiving Yards</th>
         <th>TDs</th>
-        <th>FP</th>
+        <th>Fantasy Points</th>
+        <th>FanDuel Salary</th>
+        <th>DraftKings Salary</th>
+        <th>Injury</th>
+        <th>Week</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+</div>
 
-  <footer>SneakyTool LLC © 2025</footer>
+<footer>&copy; 2025 SneakyTool</footer>
 
-  <script>
-    let playersData = [];
+<script>
+let playersData = [];
+let compareSelection = [];
 
-    // Fetch players.json from GitHub Pages
-    fetch('data/players.json')
-      .then(res => res.json())
-      .then(data => {
-        playersData = data.players;
-        populateFilters(playersData);
-        populateCompare(playersData);
-        renderCards(playersData);
-      })
-      .catch(err => console.error('Error loading JSON:', err));
+const cardsContainer = document.getElementById('cardsContainer');
+const compareTableBody = document.querySelector('#compareTable tbody');
+const teamFilter = document.getElementById('teamFilter');
+const positionFilter = document.getElementById('positionFilter');
+const searchPlayer = document.getElementById('searchPlayer');
 
-    const cardsContainer = document.getElementById('cardsContainer');
-    const teamFilter = document.getElementById('teamFilter');
-    const positionFilter = document.getElementById('positionFilter');
-    const searchPlayer = document.getElementById('searchPlayer');
-    const compareSelect = document.getElementById('compareSelect');
-    const compareTable = document.getElementById('compareTable').querySelector('tbody');
+fetch('players.json')
+  .then(res => res.json())
+  .then(data => {
+    playersData = data.players;
+    populateFilters(playersData);
+    renderCards(playersData);
+  })
+  .catch(err => console.error('Error loading JSON:', err));
 
-    function renderCards(data) {
-      cardsContainer.innerHTML = '';
-      data.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-          <div class="player-name">${p.Name || '-'}</div>
-          <div class="player-team">${p.Team || '-'} | ${p.Position || '-'}</div>
-          <div class="stats">
-            <div class="stat">Passing: ${p.PassingYards || 0}</div>
-            <div class="stat">Rushing: ${p.RushingYards || 0}</div>
-            <div class="stat">Receiving: ${p.ReceivingYards || 0}</div>
-            <div class="stat">TDs: ${p.Touchdowns || 0}</div>
-            <div class="stat highlight">FP: ${p.FantasyPoints || 0}</div>
-          </div>
-        `;
-        cardsContainer.appendChild(div);
-      });
-    }
+function renderCards(data) {
+  cardsContainer.innerHTML = '';
+  data.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="player-name">${p.Name || '-'}</div>
+      <div class="player-team">${p.Team || '-'} | ${p.Position || '-'}</div>
+      <div>
+        <button onclick="toggleCompare(${p.PlayerID})">${compareSelection.includes(p.PlayerID) ? 'Remove' : 'Compare'}</button>
+      </div>
+      <div class="stats">
+        <div class="stat">Passing: ${p.PassingYards || 0}</div>
+        <div class="stat">Rushing: ${p.RushingYards || 0}</div>
+        <div class="stat">Receiving: ${p.ReceivingYards || 0}</div>
+        <div class="stat">TDs: ${p.Touchdowns || 0}</div>
+        <div class="stat highlight">FP: ${p.FantasyPoints || 0}</div>
+        <div class="stat">FD: ${p.FanDuelSalary || 0}</div>
+        <div class="stat">DK: ${p.DraftKingsSalary || 0}</div>
+        <div class="stat">Injury: ${p.InjuryStatus || '-'}</div>
+        <div class="stat">Week: ${p.Week || '-'}</div>
+      </div>
+    `;
+    cardsContainer.appendChild(div);
+  });
+  renderCompareTable();
+}
 
-    function populateFilters(data) {
-      const teams = [...new Set(data.map(p => p.Team))];
-      const positions = [...new Set(data.map(p => p.Position))];
+function populateFilters(data) {
+  const teams = [...new Set(data.map(p => p.Team))];
+  const positions = [...new Set(data.map(p => p.Position))];
 
-      teams.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        teamFilter.appendChild(opt);
-      });
+  teams.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t;
+    opt.textContent = t;
+    teamFilter.appendChild(opt);
+  });
 
-      positions.forEach(pos => {
-        const opt = document.createElement('option');
-        opt.value = pos;
-        opt.textContent = pos;
-        positionFilter.appendChild(opt);
-      });
-    }
+  positions.forEach(pos => {
+    const opt = document.createElement('option');
+    opt.value = pos;
+    opt.textContent = pos;
+    positionFilter.appendChild(opt);
+  });
+}
 
-    function applyFilters() {
-      const team = teamFilter.value;
-      const position = positionFilter.value;
-      const search = searchPlayer.value.toLowerCase();
+function applyFilters() {
+  const team = teamFilter.value;
+  const position = positionFilter.value;
+  const search = searchPlayer.value.toLowerCase();
 
-      const filtered = playersData.filter(p => 
-        (!team || p.Team === team) &&
-        (!position || p.Position === position) &&
-        (!search || p.Name.toLowerCase().includes(search))
-      );
-      renderCards(filtered);
-      populateCompare(filtered);
-    }
+  const filtered = playersData.filter(p => 
+    (!team || p.Team === team) &&
+    (!position || p.Position === position) &&
+    (!search || p.Name.toLowerCase().includes(search))
+  );
+  renderCards(filtered);
+}
 
-    teamFilter.addEventListener('change', applyFilters);
-    positionFilter.addEventListener('change', applyFilters);
-    searchPlayer.addEventListener('input', applyFilters);
+function toggleCompare(playerID) {
+  if(compareSelection.includes(playerID)) {
+    compareSelection = compareSelection.filter(id => id !== playerID);
+  } else {
+    compareSelection.push(playerID);
+  }
+  renderCompareTable();
+  renderCards(playersData); // update buttons
+}
 
-    // Compare multiple players
-    function populateCompare(data) {
-      compareSelect.innerHTML = '';
-      data.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.PlayerID;
-        opt.textContent = `${p.Name} (${p.Team})`;
-        compareSelect.appendChild(opt);
-      });
-      updateCompareTable();
-    }
-
-    compareSelect.addEventListener('change', updateCompareTable);
-
-    function updateCompareTable() {
-      const selectedIds = Array.from(compareSelect.selectedOptions).map(o => o.value);
-      const selectedPlayers = playersData.filter(p => selectedIds.includes(String(p.PlayerID)));
-      compareTable.innerHTML = '';
-      selectedPlayers.forEach(p => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${p.Name || '-'}</td>
-          <td>${p.Team || '-'}</td>
-          <td>${p.Position || '-'}</td>
-          <td>${p.PassingYards || 0}</td>
-          <td>${p.RushingYards || 0}</td>
-          <td>${p.ReceivingYards || 0}</td>
-          <td>${p.Touchdowns || 0}</td>
-          <td>${p.FantasyPoints || 0}</td>
-        `;
-        compareTable.appendChild(row);
-      });
-    }
-  </script>
-</body>
-</html>
+function renderCompareTable() {
+  compareTableBody.innerHTML = '';
+  compareSelection.forEach(id => {
+    const p = playersData.find(pl => pl.PlayerID === id);
+    if(!p) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.Name}</td>
+      <td>${p.Team}</td>
+      <td>${p.Position}</td>
+      <td>${p.PassingYards}</td>
+      <td>${p.RushingYards}</td>
+      <td>${p.ReceivingYards}</td>
+      <td
