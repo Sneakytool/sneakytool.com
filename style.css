@@ -1,0 +1,76 @@
+body {
+  margin: 0; padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #006400;
+  color: #fff;
+  min-height: 100vh;
+}
+
+h1, h2 {
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+select, input {
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1rem;
+}
+
+.cards, .compare-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.card, .compare-card {
+  background-color: #1a472a;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s, background-color 0.2s;
+}
+.card:hover, .compare-card:hover {
+  transform: translateY(-5px);
+  background-color: #2a7a33;
+}
+
+.player-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.player-team {
+  font-size: 0.9rem;
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.stat {
+  background-color: #006400;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  flex: 1 1 40%;
+  text-align: center;
+}
+
+.highlight {
+  background-color: #e94560;
+  font-weight: bold;
+}
