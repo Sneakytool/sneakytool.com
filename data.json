@@ -4,9 +4,10 @@
       "name": "Joe Burrow",
       "team": "CIN",
       "position": "QB",
-      "passingYards": 320,
-      "rushingYards": 15,
-      "fantasyPoints": 25
+      "passingYards": 500,
+      "rushingYards": 100,
+      "touchdowns" : 7,
+      "fantasyPoints": 62
     },
     {
       "name": "Justin Jefferson",
@@ -14,15 +15,15 @@
       "position": "WR",
       "receivingYards": 150,
       "touchdowns": 2,
-      "fantasyPoints": 28
+      "fantasyPoints": 27
     },
     {
       "name": "Derrick Henry",
-      "team": "TEN",
+      "team": "BAL",
       "position": "RB",
-      "rushingYards": 120,
-      "touchdowns": 1,
-      "fantasyPoints": 22
+      "rushingYards": 20,
+      "touchdowns": 0,
+      "fantasyPoints": 2
     }
   ]
 }
