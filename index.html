@@ -3,20 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SneakyTool – NFL Dashboard</title>
+  <title>SneakyTool – NFL Dashboard (Demo)</title>
   <style>
     body {
-      margin: 0; padding: 20px;
+      margin: 0; 
+      padding: 20px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #006400;
       color: #fff;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h1 {
       text-align: center;
       color: #e94560;
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: normal;
+      color: #ffd700;
+      margin-top: 0;
       margin-bottom: 20px;
+    }
+
+    .coming-soon {
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #fff;
+      opacity: 0.85;
     }
 
     /* Filters */
@@ -39,6 +59,9 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 15px;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 40px;
     }
 
     .card {
@@ -86,10 +109,25 @@
       background-color: #e94560;
       font-weight: bold;
     }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px 0;
+      background-color: #004d00;
+      color: #fff;
+      font-size: 0.85rem;
+      position: relative;
+      bottom: 0;
+    }
   </style>
 </head>
 <body>
   <h1>SneakyTool – NFL Dashboard</h1>
+  <h2>Demo – Coming Soon!</h2>
+  <div class="coming-soon">
+    This is a demo version of SneakyTool. Full features and live NFL data will be available soon.
+  </div>
 
   <!-- Filters -->
   <div class="filters">
@@ -184,5 +222,9 @@
     positionFilter.addEventListener('change', applyFilters);
     searchPlayer.addEventListener('input', applyFilters);
   </script>
+
+  <footer>
+    &copy; 2025 SneakyTool
+  </footer>
 </body>
 </html>
