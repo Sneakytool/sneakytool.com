@@ -1,26 +1,56 @@
-- name: Fetch data from SportsDataIO
-  run: |
-    mkdir -p public/data
-    node <<'EOF'
-    const fetch = require('node-fetch');
-    const fs = require('fs');
+name: Fetch NFL Data
 
-    // Replace with your actual week/year or keep as variables
-    const year = 2025;
-    const week = 1;
-    const API_KEY = process.env.SPORTSDATAIO_API_KEY;
-    const url = `https://api.sportsdata.io/v3/nfl/stats/json/PlayerGameStatsByWeekFinal/${year}/${week}?key=${API_KEY}`;
+on:
+  schedule:
+    - cron: '0 12 * * 2'   # Every Tuesday at 12:00 UTC
+  workflow_dispatch:        # Allows manual run
 
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        console.log("Players fetched:", data.length);
-        fs.writeFileSync("public/data/players.json", JSON.stringify({ players: data }, null, 2));
-      })
-      .catch(err => {
-        console.error("❌ Error fetching data:", err);
-        process.exit(1);
-      });
-    EOF
-  env:
-    SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Fetch data from SportsDataIO
+        env:
+          SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+        run: |
+          mkdir -p public/data
+          node <<'EOF'
+          const fetch = require('node-fetch');
+          const fs = require('fs');
+
+          const year = 2025;   // Change if needed
+          const week = 1;      // Change if needed
+          const API_KEY = process.env.SPORTSDATAIO_API_KEY;
+          const url = `https://api.sportsdata.io/v3/nfl/stats/json/PlayerGameStatsByWeekFinal/${year}/${week}?key=${API_KEY}`;
+
+          fetch(url)
+            .then(res => res.json())
+            .then(data => {
+              console.log("Players fetched:", data.length);
+              fs.writeFileSync("public/data/players.json", JSON.stringify({ players: data }, null, 2));
+            })
+            .catch(err => {
+              console.error("❌ Error fetching data:", err);
+              process.exit(1);
+            });
+          EOF
+
+      - name: Commit and push data
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add public/data/players.json
+          git commit -m "Update players.json with latest NFL data" || echo "No changes to commit"
+          git push
