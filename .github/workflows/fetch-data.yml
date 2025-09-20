@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -47,10 +49,14 @@ jobs:
             });
           EOF
 
-      - name: Commit and push data
+      - name: Commit and push data if changed
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add public/data/players.json
-          git commit -m "Update players.json with latest NFL data" || echo "No changes to commit"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update players.json with latest NFL data"
+            git push
+          fi
