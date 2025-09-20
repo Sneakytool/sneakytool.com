@@ -1,0 +1,41 @@
+name: Fetch NFL Data
+
+on:
+  schedule:
+    - cron: '0 12 * * 2'   # Every Tuesday at 12:00 UTC
+  workflow_dispatch:        # Allow manual runs
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install node-fetch@2
+
+      - name: Fetch data from SportsDataIO
+        env:
+          API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+        run: |
+          mkdir -p public/data
+          node <<'EOF'
+          const fetch = require('node-fetch');
+          const fs = require('fs');
+
+          const API_KEY = process.env.API_KEY;
+          const url = "https://api.sportsdata.io/v3/nfl/stats/json/Players";
+
+          fetch(url, {
+            headers: { "Ocp-Apim-Subscription-Key": API_KEY }
+          })
+            .then(res => res.json())
+            .then(data => {
+              fs.writeFileSyn
