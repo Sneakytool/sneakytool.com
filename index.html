@@ -3,41 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SneakyTool Player Stats</title>
+  <title>SneakyTool – NFL Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>SneakyTool Player Stats</h1>
+    <h1>SneakyTool – NFL Dashboard</h1>
+    <p class="demo-note"><strong>Demo / Coming Soon!</strong></p>
   </header>
 
-  <section id="filters">
-    <select id="positionFilter">
-      <option value="">All Positions</option>
-      <option value="QB">QB</option>
-      <option value="WR">WR</option>
-      <option value="RB">RB</option>
-      <option value="TE">TE</option>
-    </select>
-    <input type="text" id="nameFilter" placeholder="Search by player name">
-    <button id="resetFilters">Reset Filters</button>
-  </section>
+  <!-- Filters -->
+  <div id="filters">
+    <label>Team:
+      <select id="teamFilter">
+        <option value="">All</option>
+      </select>
+    </label>
+    <label>Position:
+      <select id="positionFilter">
+        <option value="">All</option>
+      </select>
+    </label>
+    <input type="text" id="searchPlayer" placeholder="Search Player">
+  </div>
 
-  <section id="playerContainer">
-    <!-- Player cards will render here -->
-  </section>
+  <!-- Player Cards -->
+  <div id="playerContainer"></div>
 
-  <section id="compareContainer">
-    <h2>Compare Players</h2>
-    <div id="compareList"></div>
-    <button id="compareButton">Compare Selected</button>
+  <!-- Comparison Section -->
+  <div id="compareContainer">
+    <h3>Compare Players</h3>
     <div id="comparisonResults"></div>
-  </section>
+  </div>
 
   <footer>
     <p>&copy; 2025 SneakyTool</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    let playersData = [];
+    let comparePlayers = [];
+
+    // Fetch players.json
+    fetch('players.json')
+      .then(res => res.json())
+      .then(data => {
+        playersData = data.players;
+        populateFilters(playersData);
+        renderCards(playersData);
+      })
+      .catch(err => console.error('Error loading JSON:', err));
+
+    const playerContainer = document.getElementById('playerContainer');
+    const teamFilter = document.getElementById('teamFilter');
+    const positionFilter = document.getElementById('positionFilter');
+    const searchPlayer = document.getElementById('searchPlayer');
+    const comparisonResults = document.getElementById('comparisonResults');
+
+    function renderCards(data) {
+      playerContainer.innerHTML = '';
+      data.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'playerCard';
+        div.innerHTML = `
+          <h3>${p.Name} (${p.Position})</h3>
+          
+          <section>
+            <h4>Basic Info</h4>
+            <div class="stats-list">
+              <div>Team: ${p.Team}</div>
+              <div>Opponent: ${p.Opponent}</div>
+              <div>Week: ${p.Week}</div>
+              <div>Home/Away: ${p.HomeOrAway}</div>
+            </div>
+          </section>
+
+          <section>
+            <h4>Passing Stats</h4>
+            <div class="stats-list">
+              <div>Yards: ${p.PassingYards}</div>
+              <div>TDs: ${p.PassingTouchdowns}</div>
+              <div>INT: ${p.PassingInterceptions}</div>
+              <div>Rating: ${p.PassingRating}</div>
+            </div>
+          </section>
+
+          <section>
+            <h4>Rushing Stats</h4>
+            <div class="stats-list">
+              <div>Yards: ${p.RushingYards}</div>
+              <div>TDs: ${p.RushingTouchdowns}</div>
+              <div>Attempts: ${p.RushingAttempts}</div>
+            </div>
+          </section>
+
+          <section>
+            <h4>Receiving Stats</h4>
+            <div class="stats-list">
+              <div>Yards: ${p.ReceivingYards}</div>
+              <div>TDs: ${p.ReceivingTouchdowns}</div>
+              <div>Receptions: ${p.Receptions}</div>
+            </div>
+          </section>
+
+          <section>
+            <h4>Fantasy Stats</h4>
+            <div class="stats-list">
+              <div>Fantasy Points: ${p.FantasyPoints}</div>
+              <div>Fantasy PPR: ${p.FantasyPointsPPR}</div>
+            </div>
+          </section>
+
+          <button class="compareButton" data-playerid="${p.PlayerID}">Select for Compare</button>
+        `;
+        playerContainer.appendChild(div);
+      });
+
+      // Add compare button listeners
+      document.querySelectorAll('.compareButton').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = Number(e.target.dataset.playerid);
+          const player = playersData.find(p => p.PlayerID === id);
+          if (!comparePlayers.includes(player)) comparePlayers.push(player);
+          renderComparison();
+        });
+      });
+    }
+
+    function populateFilters(data) {
+      const teams = [...new Set(data.map(p => p.Team))];
+      const positions = [...new Set(data.map(p => p.Position))];
+
+      teams.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        teamFilter.appendChild(opt);
+      });
+
+      positions.forEach(pos => {
+        const opt = document.createElement('option');
+        opt.value = pos;
+        opt.textContent = pos;
+        positionFilter.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      const team = teamFilter.value;
+      const position = positionFilter.value;
+      const search = searchPlayer.value.toLowerCase();
+
+      const filtered = playersData.filter(p => 
+        (!team || p.Team === team) &&
+        (!position || p.Position === position) &&
+        (!search || p.Name.toLowerCase().includes(search))
+      );
+      renderCards(filtered);
+    }
+
+    function renderComparison() {
+      if (comparePlayers.length === 0) {
+        comparisonResults.innerHTML = '<p>No players selected.</p>';
+        return;
+      }
+
+      let html = '<table><tr><th>Player</th><th>Team</th><th>Passing Y</th><th>Passing TD</th><th>Rushing Y</th><th>Rushing TD</th><th>Receiving Y</th><th>Receiving TD</th><th>Fantasy Pts</th></tr>';
+      comparePlayers.forEach(p => {
+        html += `<tr>
+          <td>${p.Name}</td>
+          <td>${p.Team}</td>
+          <td>${p.PassingYards}</td>
+          <td>${p.PassingTouchdowns}</td>
+          <td>${p.RushingYards}</td>
+          <td>${p.RushingTouchdowns}</td>
+          <td>${p.ReceivingYards}</td>
+          <td>${p.ReceivingTouchdowns}</td>
+          <td>${p.FantasyPoints}</td>
+        </tr>`;
+      });
+      html += '</table>';
+      comparisonResults.innerHTML = html;
+    }
+
+    teamFilter.addEventListener('change', applyFilters);
+    positionFilter.addEventListener('change', applyFilters);
+    searchPlayer.addEventListener('input', applyFilters);
+  </script>
 </body>
 </html>
